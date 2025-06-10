@@ -706,7 +706,11 @@ class Polymath:
                 messages=messages
                 #seed=seed not yet supported
             )
-            output_text = completion.content
+            if completion.content and isinstance(completion.content, list) and hasattr(completion.content[0], 'text'):
+                output_text = completion.content[0].text
+            else:
+                # Fallback in case the format is different than expected
+                output_text = str(completion.content)
             self.chat_history.extend([{"role": "user", "content": prompt},
                                     {"role": "assistant", "content": output_text}])
             return (output_text,)
